@@ -6,6 +6,7 @@ package marketdata;
 import java.time.LocalDateTime;
 
 public class Bar {
+	
 	private LocalDateTime DateTime;
 	private String Symbol;
 	private String Period;

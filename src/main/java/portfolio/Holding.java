@@ -1,108 +1,100 @@
-﻿//namespace BackTesting.Model.Portfolio
-//{
-//    using System;
-//    using System.Collections.Generic;
-//    using System.Text;
-package portfolio;
+﻿package portfolio;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Holding
-    {
-        private LocalDateTime DateTime;
-        private Map<String, Double> SymbolHoldings ;
-        private double Comission ;
-        private double Cash ;
-        private double Total ;
-        private double Change ;
+public class Holding {
+	
+	private LocalDateTime DateTime;
+	private Map<String, Double> SymbolHoldings;
+	private double Comission;
+	private double Cash;
+	private double Total;
+	private double Change;
 
-        private double Returns ;
-        private double EquityCurve ;
+	private double Returns;
+	private double EquityCurve;
 
-        public Holding()
-        {
-            this.SymbolHoldings = new LinkedHashMap<>();
+	public Holding() {
+		this.SymbolHoldings = new LinkedHashMap<>();
 
-        }
+	}
 
-        @Override
-        public  String toString()
-        {
-        	StringBuilder sb = new StringBuilder();
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
 
-            for (Map.Entry<String,Double> sh : SymbolHoldings.entrySet())
-            {
-                sb.append(sh.getKey() + "=" + sh.getValue());
-            }
-
-            sb.append("Comission={this.Comission} Cash={this.Cash} Total={this.Total} Change={this.Change}");
-
-            return sb.toString();
-        }
-
-		public LocalDateTime getDateTime() {
-			return DateTime;
+		for (Map.Entry<String, Double> sh : SymbolHoldings.entrySet()) {
+			sb.append(sh.getKey() + "=" + sh.getValue());
 		}
 
-		public void setDateTime(LocalDateTime dateTime) {
-			DateTime = dateTime;
-		}
+		sb.append("Comission={this.Comission} Cash={this.Cash} Total={this.Total} Change={this.Change}");
 
-		public Map<String, Double> getSymbolHoldings() {
-			return SymbolHoldings;
-		}
+		return sb.toString();
+	}
 
-		public void setSymbolHoldings(Map<String, Double> symbolHoldings) {
-			SymbolHoldings = symbolHoldings;
-		}
+	public LocalDateTime getDateTime() {
+		return DateTime;
+	}
 
-		public double getComission() {
-			return Comission;
-		}
+	public void setDateTime(LocalDateTime dateTime) {
+		DateTime = dateTime;
+	}
 
-		public void setComission(double comission) {
-			Comission = comission;
-		}
+	public Map<String, Double> getSymbolHoldings() {
+		return SymbolHoldings;
+	}
 
-		public double getCash() {
-			return Cash;
-		}
+	public void setSymbolHoldings(Map<String, Double> symbolHoldings) {
+		SymbolHoldings = symbolHoldings;
+	}
 
-		public void setCash(double cash) {
-			Cash = cash;
-		}
+	public double getComission() {
+		return Comission;
+	}
 
-		public double getTotal() {
-			return Total;
-		}
+	public void setComission(double comission) {
+		Comission = comission;
+	}
 
-		public void setTotal(double total) {
-			Total = total;
-		}
+	public double getCash() {
+		return Cash;
+	}
 
-		public double getChange() {
-			return Change;
-		}
+	public void setCash(double cash) {
+		Cash = cash;
+	}
 
-		public void setChange(double change) {
-			Change = change;
-		}
+	public double getTotal() {
+		return Total;
+	}
 
-		public double getReturns() {
-			return Returns;
-		}
+	public void setTotal(double total) {
+		Total = total;
+	}
 
-		public void setReturns(double returns) {
-			Returns = returns;
-		}
+	public double getChange() {
+		return Change;
+	}
 
-		public double getEquityCurve() {
-			return EquityCurve;
-		}
+	public void setChange(double change) {
+		Change = change;
+	}
 
-		public void setEquityCurve(double equityCurve) {
-			EquityCurve = equityCurve;
-		}
-    }
+	public double getReturns() {
+		return Returns;
+	}
+
+	public void setReturns(double returns) {
+		Returns = returns;
+	}
+
+	public double getEquityCurve() {
+		return EquityCurve;
+	}
+
+	public void setEquityCurve(double equityCurve) {
+		EquityCurve = equityCurve;
+	}
+}

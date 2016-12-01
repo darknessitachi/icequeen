@@ -1,6 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>event-driven-backtesting</groupId>
-  <artifactId>event-driven-backtesting</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>event-driven-backtesting</groupId>
+	<artifactId>event-driven-backtesting</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.test.skip>true</maven.test.skip>
+		<maven.test.failure.ignore>true</maven.test.failure.ignore>
+		<java.version>1.8</java.version>
+		<rapidark.version>0.1.2-SNAPSHOT</rapidark.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.github.rapidark</groupId>
+			<artifactId>rapid-ark-framework</artifactId>
+			<version>${rapidark.version}</version>
+		</dependency>
+	</dependencies>
+
 </project>

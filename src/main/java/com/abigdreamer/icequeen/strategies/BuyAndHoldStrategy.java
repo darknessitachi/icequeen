@@ -20,10 +20,10 @@ public class BuyAndHoldStrategy implements IStrategy {
 	public BuyAndHoldStrategy(IEventBus eventBus, IDataHandler dataHandler) {
 		this.eventBus = eventBus;
 		this.bars = dataHandler;
-		this.bought = this.CalculateInitialBought();
+		this.bought = this.calculateInitialBought();
 	}
 
-	public void CalculateSignals() {
+	public void calculateSignals() {
 		if (this.bars.getCurrentTime() == null) {
 			// not started yet
 			return;
@@ -36,7 +36,7 @@ public class BuyAndHoldStrategy implements IStrategy {
 				continue;
 			}
 
-			Bar lastBar = this.bars.GetLast(symbol);
+			Bar lastBar = this.bars.getLast(symbol);
 
 			if (lastBar == null) {
 				// No market data
@@ -44,11 +44,11 @@ public class BuyAndHoldStrategy implements IStrategy {
 			}
 
 			this.bought.put(symbol, true);
-			this.eventBus.Put(new SignalEvent(symbol, currentTime, SignalType.Long));
+			this.eventBus.put(new SignalEvent(symbol, currentTime, SignalType.Long));
 		}
 	}
 
-	private Map<String, Boolean> CalculateInitialBought() {
+	private Map<String, Boolean> calculateInitialBought() {
 		Map<String, Boolean> result = new LinkedHashMap<>();
 
 		for (String symbol : this.bars.getSymbols()) {

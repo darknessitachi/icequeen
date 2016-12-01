@@ -16,75 +16,73 @@ public class HistoricDataHandler implements IDataHandler {
 	private IMarketData marketData;
 	private Iterator<LocalDateTime> timeEnumerator;
 
-	public LocalDateTime CurrentTime;
-	public boolean ContinueBacktest;
-
-	public List<String> getSymbols() {
-		return this.marketData.getSymbols();
-	};
+	public LocalDateTime currentTime;
+	public boolean isContinueBacktest;
 
 	public HistoricDataHandler(IEventBus eventBus, IMarketData marketData) {
 		this.eventBus = eventBus;
 		this.marketData = marketData;
-		this.ContinueBacktest = true;
-		this.timeEnumerator = this.marketData.getRowKeys().iterator();
-		this.CurrentTime = null;
+		this.isContinueBacktest = true;
+		this.timeEnumerator = this.marketData.getTimeLine().iterator();
+		this.currentTime = null;
 	}
 
-	public Bar GetLast(String symbol) {
+	public List<String> getSymbols() {
+		return this.marketData.getSymbols();
+	}
+	
+	public Bar getLast(String symbol) {
 		Map<LocalDateTime, Bar> bars = this.marketData.getBars().get(symbol);
 
-		if (bars == null) {
+		if (this.currentTime == null) {
 			return null;
 		}
 
-		if (this.CurrentTime != null) {
-			return null;
-		}
-
-		LocalDateTime dateTime = this.CurrentTime;
+		LocalDateTime dateTime = this.currentTime;
 
 		if (bars.containsKey(dateTime)) {
 			return bars.get(dateTime);
 		}
 
-		// var smallerDate = bars.Keys.OrderByDescending(k =>
-		// k).FirstOrDefault(key => key <= dateTime);
-		//
-		// return bars.ContainsKey(smallerDate) ? bars[smallerDate] : null;
 		return null;
 	}
 
-	public double GetLastClosePrice(String symbol) {
-		return this.GetLast(symbol).getClose();
+	public double getLastClosePrice(String symbol) {
+		Bar bar = this.getLast(symbol);
+		if(bar == null) {
+			return 0;
+		}
+		return bar.getClose();
 	}
 
-	public void Update() {
-		if (!this.ContinueBacktest) {
+	public void update() {
+		if (!this.isContinueBacktest) {
 			return;
 		}
 
-		this.CurrentTime = this.GetNextTime();
+		this.currentTime = this.getNextTime();
 
-		if (this.CurrentTime != null) {
-			this.eventBus.Put(new MarketEvent(this.CurrentTime));
+		if (this.currentTime != null) {
+			this.eventBus.put(new MarketEvent(this.currentTime));
 		} else {
-			this.ContinueBacktest = false;
+			this.isContinueBacktest = false;
 		}
 	}
 
-	private LocalDateTime GetNextTime() {
-		LocalDateTime moved = this.timeEnumerator.next();
-		return moved != null ? this.timeEnumerator.next() : null;
+	private LocalDateTime getNextTime() {
+		if(this.timeEnumerator.hasNext()) {
+			return this.timeEnumerator.next();
+		}
+		return null;
 	}
 
 	@Override
-	public boolean getContinueBacktest() {
-		return ContinueBacktest;
+	public boolean isContinueBacktest() {
+		return isContinueBacktest;
 	}
 
 	@Override
 	public LocalDateTime getCurrentTime() {
-		return CurrentTime;
+		return currentTime;
 	}
 }

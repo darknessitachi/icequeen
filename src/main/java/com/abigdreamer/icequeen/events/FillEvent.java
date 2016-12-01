@@ -12,117 +12,114 @@ import com.abigdreamer.icequeen.enums.TransactionDirection;
  */
 public class FillEvent extends Event {
 	
+	private LocalDateTime timeIndex;
+	private String symbol;
+	private String exchange;
+	private int quantity;
+	private TransactionDirection direction;
+	private double fillCost;
+	private double comission;
+
+	public FillEvent(LocalDateTime timeIndex, String symbol, String exchange, int quantity,
+			TransactionDirection direction, double fillCost) {
+		this.timeIndex = timeIndex;
+		this.symbol = symbol;
+		this.exchange = exchange;
+		this.quantity = quantity;
+		this.direction = direction;
+		this.fillCost = fillCost;
+		this.comission = this.CalculateIbComission();
+	}
+
+	public FillEvent(LocalDateTime timeIndex, String symbol, String exchange, int quantity,
+			TransactionDirection direction, double fillCost, double comission) {
+		this.timeIndex = timeIndex;
+		this.symbol = symbol;
+		this.exchange = exchange;
+		this.quantity = quantity;
+		this.direction = direction;
+		this.fillCost = fillCost;
+		this.comission = comission == 0 ? this.CalculateIbComission() : comission;
+	}
+	
 	@Override
 	public com.abigdreamer.icequeen.enums.EventType getEventType() {
 		return EventType.Fill;
 	}
 
-	private LocalDateTime TimeIndex;
-	private String Symbol;
-	private String Exchange;
-	private int Quantity;
-	private TransactionDirection Direction;
-	private double FillCost;
-	private double Comission;
-
-	public FillEvent(LocalDateTime timeIndex, String symbol, String exchange, int quantity,
-			TransactionDirection direction, double fillCost) {
-		this.TimeIndex = timeIndex;
-		this.Symbol = symbol;
-		this.Exchange = exchange;
-		this.Quantity = quantity;
-		this.Direction = direction;
-		this.FillCost = fillCost;
-		this.Comission = this.CalculateIbComission();
-	}
-
-	public FillEvent(LocalDateTime timeIndex, String symbol, String exchange, int quantity,
-			TransactionDirection direction, double fillCost, double comission) {
-		this.TimeIndex = timeIndex;
-		this.Symbol = symbol;
-		this.Exchange = exchange;
-		this.Quantity = quantity;
-		this.Direction = direction;
-		this.FillCost = fillCost;
-		this.Comission = comission == 0 ? this.CalculateIbComission() : comission;
-	}
-
-	/// <summary>
 	/// Calculates the fees of trading based on an Interactive Brokers fee
 	/// structure for API, in USD.
 	/// This does not include exchange or ECN fees.
 	/// Based on "US API Directed Orders":
 	/// https://www.interactivebrokers.com/en/index.php?f=commission&p=stocks2
-	/// </summary>
-	/// <returns></returns>
 	/**
 	 * 计算交易费
 	 * @return
 	 */
 	private double CalculateIbComission() {
-		double fullCost = this.Quantity <= 500 ? Math.max(1.3, 0.013 * this.Quantity)
-				: Math.max(1.3, 0.008 * this.Quantity);
-		return Math.min(fullCost, (0.5 / 100.0 * this.Quantity * this.FillCost));
+		double fullCost = this.quantity <= 500 ? Math.max(1.3, 0.013 * this.quantity)
+				: Math.max(1.3, 0.008 * this.quantity);
+		return Math.min(fullCost, (0.5 / 100.0 * this.quantity * this.fillCost));
 	}
 
 	@Override
 	public String toString() {
-		return "Fill: {this.TimeIndex} {this.Exchange} {this.Symbol} {this.Direction} Qty={this.Quantity} FillCost={this.FillCost} Comission={this.Comission}";
+		return "Fill: "+this.timeIndex+", "+this.exchange+", "+this.symbol+", "+this.direction+", Qty="+this.quantity+", FillCost="+this.fillCost+", Comission="+this.comission;
 	}
 
 	public LocalDateTime getTimeIndex() {
-		return TimeIndex;
+		return timeIndex;
 	}
 
 	public void setTimeIndex(LocalDateTime timeIndex) {
-		TimeIndex = timeIndex;
+		this.timeIndex = timeIndex;
 	}
 
 	public String getSymbol() {
-		return Symbol;
+		return symbol;
 	}
 
 	public void setSymbol(String symbol) {
-		Symbol = symbol;
+		this.symbol = symbol;
 	}
 
 	public String getExchange() {
-		return Exchange;
+		return exchange;
 	}
 
 	public void setExchange(String exchange) {
-		Exchange = exchange;
+		this.exchange = exchange;
 	}
 
 	public int getQuantity() {
-		return Quantity;
+		return quantity;
 	}
 
 	public void setQuantity(int quantity) {
-		Quantity = quantity;
+		this.quantity = quantity;
 	}
 
 	public TransactionDirection getDirection() {
-		return Direction;
+		return direction;
 	}
 
 	public void setDirection(TransactionDirection direction) {
-		Direction = direction;
+		this.direction = direction;
 	}
 
 	public double getFillCost() {
-		return FillCost;
+		return fillCost;
 	}
 
 	public void setFillCost(double fillCost) {
-		FillCost = fillCost;
+		this.fillCost = fillCost;
 	}
 
 	public double getComission() {
-		return Comission;
+		return comission;
 	}
 
 	public void setComission(double comission) {
-		Comission = comission;
+		this.comission = comission;
 	}
 }

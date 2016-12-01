@@ -8,7 +8,7 @@ public interface IMarketData {
 	
 	Map<String, Map<LocalDateTime, Bar>> getBars();
 
-	List<LocalDateTime> getRowKeys();
+	List<LocalDateTime> getTimeLine();
 
 	List<String> getSymbols();
 }

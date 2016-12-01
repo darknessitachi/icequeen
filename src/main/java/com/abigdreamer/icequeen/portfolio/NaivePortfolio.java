@@ -1,6 +1,7 @@
 ﻿package com.abigdreamer.icequeen.portfolio;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,11 +21,7 @@ public class NaivePortfolio implements IPortfolio {
 	private IDataHandler bars;
 	private double initialCapital;
 
-	public Map<LocalDateTime, Holding> HoldingHistory;
-
-	public Map<LocalDateTime, Holding> getHoldingHistory() {
-		return HoldingHistory;
-	}
+	public Map<LocalDateTime, Holding> holdingHistory;
 
 	private Map<String, Integer> currentPositions;
 	private double currentComission;
@@ -34,7 +31,8 @@ public class NaivePortfolio implements IPortfolio {
 		this.eventBus = eventBus;
 		this.bars = bars;
 		this.initialCapital = initialCapital;
-		this.HoldingHistory = new LinkedHashMap<>();
+		this.holdingHistory = new LinkedHashMap<>();
+		this.currentPositions = new HashMap<>();
 		for (String symbol : this.bars.getSymbols()) {
 			this.currentPositions.put(symbol, 0);
 		}
@@ -43,7 +41,11 @@ public class NaivePortfolio implements IPortfolio {
 		this.currentCash = this.initialCapital;
 	}
 
-	public Map<LocalDateTime, Double> GetEquityCurve() {
+	public Map<LocalDateTime, Holding> getHoldingHistory() {
+		return holdingHistory;
+	}
+	
+	public Map<LocalDateTime, Double> getEquityCurve() {
 		double prevTotal = 0;
 		double equity = 1;
 
@@ -59,23 +61,23 @@ public class NaivePortfolio implements IPortfolio {
 		}
 
 		Map<LocalDateTime, Double> result = new LinkedHashMap<>();
-		for (Map.Entry<LocalDateTime, Holding> kvp : this.HoldingHistory.entrySet()) {
+		for (Map.Entry<LocalDateTime, Holding> kvp : this.holdingHistory.entrySet()) {
 			result.put(kvp.getKey(), kvp.getValue().getEquityCurve());
 		}
 
 		return result;
 	}
 
-	public void UpdateSignal(SignalEvent signal) {
-		OrderEvent orderEvent = this.GenerateNaiveOrder(signal);
+	public void updateSignal(SignalEvent signal) {
+		OrderEvent orderEvent = this.generateNaiveOrder(signal);
 		if (orderEvent != null) {
-			this.eventBus.Put(orderEvent);
+			this.eventBus.put(orderEvent);
 		}
 	}
 
-	public void UpdateFill(FillEvent fill) {
-		int fillDir = GetNumericDirection(fill.getDirection());
-		double closePrice = this.bars.GetLastClosePrice(fill.getSymbol());
+	public void updateFill(FillEvent fill) {
+		int fillDir = getNumericDirection(fill.getDirection());
+		double closePrice = this.bars.getLastClosePrice(fill.getSymbol());
 
 		if (closePrice == 0) {
 			throw new RuntimeException("Cannot find last price for {fill.Symbol}");
@@ -90,7 +92,7 @@ public class NaivePortfolio implements IPortfolio {
 		this.currentCash -= (cost + fill.getComission());
 	}
 
-	public void UpdateTimeIndex(MarketEvent market) {
+	public void updateTimeIndex(MarketEvent market) {
 		Map<String, Double> marketHoldings = new LinkedHashMap<>();
 		for (String symbol : this.bars.getSymbols()) {
 			marketHoldings.put(symbol, 0.0);
@@ -102,14 +104,12 @@ public class NaivePortfolio implements IPortfolio {
 
 		for (String symbol : this.bars.getSymbols()) {
 			int qty = this.currentPositions.get(symbol);
-			double closePrice = this.bars.GetLastClosePrice(symbol);
+			double closePrice = this.bars.getLastClosePrice(symbol);
 
 			if (closePrice == 0) {
-				if (qty != 0) {
-					throw new RuntimeException("Unknown close price for {symbol} with position qty={qty}.");
-				}
-
-				closePrice = 0;
+//				if (qty != 0) {
+//					throw new RuntimeException("Unknown close price for "+symbol+" with position qty="+qty+".");
+//				}
 			}
 
 			double marketValue = qty * closePrice;
@@ -132,14 +132,10 @@ public class NaivePortfolio implements IPortfolio {
 
 		LocalDateTime dateTime = market.getCurrentTime();
 
-		if (this.HoldingHistory.containsKey(dateTime)) {
-			this.HoldingHistory.put(dateTime, holding);
-		} else {
-			this.HoldingHistory.put(dateTime, holding);
-		}
+		this.holdingHistory.put(dateTime, holding);
 	}
 
-	private OrderEvent GenerateNaiveOrder(SignalEvent signal) {
+	private OrderEvent generateNaiveOrder(SignalEvent signal) {
 		String symbol = signal.getSymbol();
 		SignalType direction = signal.getSignalType();
 		double strength = signal.getStrength();
@@ -164,8 +160,7 @@ public class NaivePortfolio implements IPortfolio {
 		return null;
 	}
 
-	// TODO: Convert to extension
-	private static int GetNumericDirection(TransactionDirection dir) {
+	private static int getNumericDirection(TransactionDirection dir) {
 		return dir == TransactionDirection.Buy ? 1 : dir == TransactionDirection.Sell ? -1 : 0;
 	}
 }

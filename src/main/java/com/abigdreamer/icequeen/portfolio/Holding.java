@@ -1,23 +1,28 @@
 ﻿package com.abigdreamer.icequeen.portfolio;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.abigdreamer.icequeen.utils.Util;
+import com.google.common.base.Joiner;
 
 public class Holding {
 	
-	private LocalDateTime DateTime;
-	private Map<String, Double> SymbolHoldings;
-	private double Comission;
-	private double Cash;
-	private double Total;
-	private double Change;
+	private LocalDateTime dateTime;
+	private Map<String, Double> symbolHoldings;
+	private double comission;
+	private double cash;
+	private double total;
+	private double change;
 
-	private double Returns;
-	private double EquityCurve;
+	private double returns;
+	private double equityCurve;
 
 	public Holding() {
-		this.SymbolHoldings = new LinkedHashMap<>();
+		this.symbolHoldings = new LinkedHashMap<>();
 
 	}
 
@@ -25,76 +30,79 @@ public class Holding {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		for (Map.Entry<String, Double> sh : SymbolHoldings.entrySet()) {
-			sb.append(sh.getKey() + "=" + sh.getValue());
+		List<String> holdInfo = new ArrayList<>();
+		for (Map.Entry<String, Double> sh : symbolHoldings.entrySet()) {
+			holdInfo.add(sh.getKey() + "=" + Util.getDecimal(sh.getValue(), 2));
 		}
+		
+		sb.append(Joiner.on(",").join(holdInfo));
 
-		sb.append("Comission={this.Comission} Cash={this.Cash} Total={this.Total} Change={this.Change}");
+		sb.append("\tComission="+this.comission+",Cash="+Util.getDecimal(this.cash,2)+",Total="+Util.getDecimal(this.total,2)+",Change=" + Util.getDecimal(this.change,2));
 
 		return sb.toString();
 	}
 
 	public LocalDateTime getDateTime() {
-		return DateTime;
+		return dateTime;
 	}
 
 	public void setDateTime(LocalDateTime dateTime) {
-		DateTime = dateTime;
+		this.dateTime = dateTime;
 	}
 
 	public Map<String, Double> getSymbolHoldings() {
-		return SymbolHoldings;
+		return symbolHoldings;
 	}
 
 	public void setSymbolHoldings(Map<String, Double> symbolHoldings) {
-		SymbolHoldings = symbolHoldings;
+		this.symbolHoldings = symbolHoldings;
 	}
 
 	public double getComission() {
-		return Comission;
+		return comission;
 	}
 
 	public void setComission(double comission) {
-		Comission = comission;
+		this.comission = comission;
 	}
 
 	public double getCash() {
-		return Cash;
+		return cash;
 	}
 
 	public void setCash(double cash) {
-		Cash = cash;
+		this.cash = cash;
 	}
 
 	public double getTotal() {
-		return Total;
+		return total;
 	}
 
 	public void setTotal(double total) {
-		Total = total;
+		this.total = total;
 	}
 
 	public double getChange() {
-		return Change;
+		return change;
 	}
 
 	public void setChange(double change) {
-		Change = change;
+		this.change = change;
 	}
 
 	public double getReturns() {
-		return Returns;
+		return returns;
 	}
 
 	public void setReturns(double returns) {
-		Returns = returns;
+		this.returns = returns;
 	}
 
 	public double getEquityCurve() {
-		return EquityCurve;
+		return equityCurve;
 	}
 
 	public void setEquityCurve(double equityCurve) {
-		EquityCurve = equityCurve;
+		this.equityCurve = equityCurve;
 	}
 }

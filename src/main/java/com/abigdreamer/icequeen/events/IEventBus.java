@@ -2,7 +2,7 @@
 
 public interface IEventBus {
 	
-	void Put(Event message);
+	void put(Event message);
 
-	Event Get();
+	Event get();
 }

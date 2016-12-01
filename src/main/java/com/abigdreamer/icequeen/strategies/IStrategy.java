@@ -20,5 +20,5 @@ public interface IStrategy {
 	/**
 	 * Provides the mechanisms to calculate the list of signals.
 	 */
-	void CalculateSignals();
+	void calculateSignals();
 }

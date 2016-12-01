@@ -22,7 +22,7 @@ public class EventDrivenBacktestingTest {
 
 		doMainBackTest();
 
-		System.out.println("\nBackTest has been finished. Press ENTER to exit.");
+		System.out.println("\nBackTest has been finished.");
 	}
 
 	private static void doMainBackTest() {
@@ -36,7 +36,7 @@ public class EventDrivenBacktestingTest {
 
 		BackTest backTest = new BackTest(eventBus, bars, strategy, portfolio, executionHandler);
 
-		backTest.SimulateTrading();
+		backTest.simulateTrading();
 	}
 
 }

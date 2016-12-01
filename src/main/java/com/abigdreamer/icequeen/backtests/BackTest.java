@@ -1,12 +1,12 @@
 ﻿package com.abigdreamer.icequeen.backtests;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import org.omg.PortableInterceptor.HOLDING;
-
 import com.abigdreamer.icequeen.datahandlers.IDataHandler;
-import com.abigdreamer.icequeen.enums.*;
+import com.abigdreamer.icequeen.enums.EventType;
 import com.abigdreamer.icequeen.events.Event;
 import com.abigdreamer.icequeen.events.FillEvent;
 import com.abigdreamer.icequeen.events.IEventBus;
@@ -17,8 +17,11 @@ import com.abigdreamer.icequeen.executionhandlers.IExecutionHandler;
 import com.abigdreamer.icequeen.portfolio.Holding;
 import com.abigdreamer.icequeen.portfolio.IPortfolio;
 import com.abigdreamer.icequeen.strategies.IStrategy;
+import com.abigdreamer.icequeen.utils.Util;
+import com.abigdreamer.infinity.common.util.TimeWatch;
 
 public class BackTest {
+	
 	private int heartBeatMilliseconds = 0;
 
 	private IEventBus eventBus;
@@ -31,7 +34,7 @@ public class BackTest {
 	private int orders = 0;
 	private int fills = 0;
 
-	private Stopwatch stopWatch;
+	private TimeWatch timeWatch;
 
 	public BackTest(IEventBus eventBus, IDataHandler bars, IStrategy strategy, IPortfolio portfolio,
 			IExecutionHandler executionHandler) {
@@ -40,27 +43,29 @@ public class BackTest {
 		this.strategy = strategy;
 		this.portfolio = portfolio;
 		this.executionHandler = executionHandler;
-		this.stopWatch = new Stopwatch();
+		this.timeWatch = TimeWatch.create();
 	}
 
-	public void SimulateTrading() {
-		this.Run();
-		this.OutputPerformance();
+	public void simulateTrading() {
+		this.run();
+		this.outputPerformance();
 	}
 
-	private void Run() {
-		this.stopWatch.Start();
+	private void run() {
+		this.timeWatch.startWithTaskName("simulate trading");
+		
 		int iteration = 0;
 		while (true) {
 			iteration++;
-			if (this.bars.getContinueBacktest()) {
-				this.bars.Update();
-			} else {
-				break;
+			
+			if (!this.bars.isContinueBacktest()) {
+				break;	
 			}
+			
+			this.bars.update();
 
 			while (true) {
-				Event evt = this.eventBus.Get();
+				Event evt = this.eventBus.get();
 
 				if (evt == null) {
 					break;
@@ -71,22 +76,22 @@ public class BackTest {
 					if (iteration % 100 == 0) {
 						System.out.println(iteration+" Market time: " + mEvt.getCurrentTime());
 					}
-					this.strategy.CalculateSignals();
-					this.portfolio.UpdateTimeIndex(mEvt);
+					this.strategy.calculateSignals();
+					this.portfolio.updateTimeIndex(mEvt);
 				} else if (evt.getEventType() == EventType.Signal) {
 					SignalEvent signal = (SignalEvent) evt;
 					System.out.println(" => " + signal);
-					this.portfolio.UpdateSignal(signal);
+					this.portfolio.updateSignal(signal);
 					this.signals++;
 				} else if (evt.getEventType() == EventType.Order) {
 					OrderEvent order = (OrderEvent) evt;
 					System.out.println(" => " + order);
-					this.executionHandler.ExecuteOrder(order);
+					this.executionHandler.executeOrder(order);
 					this.orders++;
 				} else if (evt.getEventType() == EventType.Fill) {
 					FillEvent fill = (FillEvent) evt;
 					System.out.println(" => " + fill);
-					this.portfolio.UpdateFill(fill);
+					this.portfolio.updateFill(fill);
 					this.fills++;
 				}
 			}
@@ -97,57 +102,54 @@ public class BackTest {
 			}
 		}
 
-		this.stopWatch.Stop();
+		this.timeWatch.stopAndPrint();
 	}
 
-	private void OutputPerformance() {
+	private void outputPerformance() {
 		System.out.println("\nCreating summary stats ...");
 		System.out.println("---------------------------");
 		System.out.println("Holdings");
-		this.PrintHoldingHistory(this.portfolio.getHoldingHistory());
+		this.printHoldingHistory(this.portfolio.getHoldingHistory());
 		System.out.println("---------------------------");
 		System.out.println("Equity");
-		Map<LocalDateTime, Double> equityCurve = this.portfolio.GetEquityCurve();
-		this.PrintEquityCurve(equityCurve);
-		this.SaveAsCsv(equityCurve, "equtycurve.csv");
+		Map<LocalDateTime, Double> equityCurve = this.portfolio.getEquityCurve();
+		this.printEquityCurve(equityCurve);
+		this.saveAsCsv(equityCurve, "equtycurve.csv");
 		System.out.println("---------------------------");
-		System.out.println("Signals={this.signals} Orders={this.orders} Fills={this.fills}");
-
-		// var ts = this.stopWatch.Elapsed;
-		System.out.println("Run Time: {ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Map<K, V>liseconds / 10:00}");
-
+		System.out.println("Signals="+this.signals+" Orders="+this.orders+" Fills="+this.fills);
 	}
 
-	private void PrintHoldingHistory(Map<LocalDateTime, Holding> holdingHistory) {
-		for (LocalDateTime key : holdingHistory.keySet()) {
-			System.out.println(holdingHistory.get(key));
+	private void printHoldingHistory(Map<LocalDateTime, Holding> holdingHistory) {
+		List<LocalDateTime> times = new ArrayList<>(holdingHistory.keySet());
+		for (int i = 0; i < 15; i++) {
+			LocalDateTime time = times.get(i);
+			System.out.println(time + "==>" + holdingHistory.get(time));
 		}
 
 		System.out.println("......................................");
 
-		// for (var key in holdingHistory.Keys.OrderByDescending(k =>
-		// k).Take(15))
-		// {
-		// System.out.println(holdingHistory[key]);
-		// }
+		for (int i = 15; i > 0; i--) {
+			LocalDateTime time = times.get(times.size() - i);
+			System.out.println(time + "==>" + holdingHistory.get(time));
+		}
 	}
 
-	private void PrintEquityCurve(Map<LocalDateTime, Double> equityCurve) {
-		// foreach (var key in equityCurve.Keys.Take(15))
-		// {
-		// System.out.println($"{key} {equityCurve[key]}");
-		// }
+	private void printEquityCurve(Map<LocalDateTime, Double> equityCurve) {
+		List<LocalDateTime> times = new ArrayList<>(equityCurve.keySet());
+		for (int i = 0; i < 15; i++) {
+			LocalDateTime time = times.get(i);
+			System.out.println(time + "==>" + Util.getDecimal(equityCurve.get(time), 4));
+		}
 
 		System.out.println("......................................");
 
-		// foreach (var key in equityCurve.Keys.OrderByDescending(k =>
-		// k).Take(15))
-		// {
-		// System.out.println("{key} {equityCurve[key]}");
-		// }
+		for (int i = 15; i > 0; i--) {
+			LocalDateTime time = times.get(times.size() - i);
+			System.out.println(time + "==>" + Util.getDecimal(equityCurve.get(time), 4));
+		}
 	}
 
-	private void SaveAsCsv(Map<LocalDateTime, Double> equityCurve, String fileName) {
+	private void saveAsCsv(Map<LocalDateTime, Double> equityCurve, String fileName) {
 		// using (var tw = new StreamWriter(fileName))
 		// {
 		// var csvWriter = new CsvWriter(tw);

@@ -14,68 +14,68 @@ import com.abigdreamer.icequeen.enums.TransactionDirection;
  */
 public class OrderEvent extends Event {
 	
-	@Override
-	public EventType getEventType() {
-		return EventType.Order;
-	}
-
-	private String Symbol;
-	private OrderType OrderType;
-	private int Quantity;
-	private TransactionDirection OrderDirection;
-	private LocalDateTime OrderTime;
+	private String symbol;
+	private OrderType orderType;
+	private int quantity;
+	private TransactionDirection orderDirection;
+	private LocalDateTime orderTime;
 
 	public OrderEvent(String symbol, OrderType orderType, int quantity, TransactionDirection orderDirection,
 			LocalDateTime orderTime) {
-		this.Symbol = symbol;
-		this.OrderType = orderType;
-		this.Quantity = quantity;
-		this.OrderDirection = orderDirection;
-		this.OrderTime = orderTime;
+		this.symbol = symbol;
+		this.orderType = orderType;
+		this.quantity = quantity;
+		this.orderDirection = orderDirection;
+		this.orderTime = orderTime;
 	}
 
 	@Override
 	public String toString() {
-		return "Order: {this.OrderTime} {this.Symbol} {this.OrderDirection} {this.OrderType} Qty={this.Quantity}";
+		return "Order: "+this.orderTime+", "+this.symbol+", "+this.orderDirection+", "+this.orderType+", Qty="+ this.quantity;
 	}
 
 	public String getSymbol() {
-		return Symbol;
+		return symbol;
 	}
 
 	public void setSymbol(String symbol) {
-		Symbol = symbol;
+		this.symbol = symbol;
 	}
 
 	public OrderType getOrderType() {
-		return OrderType;
+		return orderType;
 	}
 
 	public void setOrderType(OrderType orderType) {
-		OrderType = orderType;
+		this.orderType = orderType;
 	}
 
 	public int getQuantity() {
-		return Quantity;
+		return quantity;
 	}
 
 	public void setQuantity(int quantity) {
-		Quantity = quantity;
+		this.quantity = quantity;
 	}
 
 	public TransactionDirection getOrderDirection() {
-		return OrderDirection;
+		return orderDirection;
 	}
 
 	public void setOrderDirection(TransactionDirection orderDirection) {
-		OrderDirection = orderDirection;
+		this.orderDirection = orderDirection;
 	}
 
 	public LocalDateTime getOrderTime() {
-		return OrderTime;
+		return orderTime;
 	}
 
 	public void setOrderTime(LocalDateTime orderTime) {
-		OrderTime = orderTime;
+		this.orderTime = orderTime;
+	}
+	
+	@Override
+	public EventType getEventType() {
+		return EventType.Order;
 	}
 }

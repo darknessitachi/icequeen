@@ -40,7 +40,7 @@ public class SignalEvent extends Event {
 
 	@Override
 	public String toString() {
-		return "Signal: {this.TimeStamp} {this.Symbol} {this.SignalType} Strength={this.Strength}";
+		return "Signal: "+this.TimeStamp+","+this.Symbol+","+this.SignalType+",Strength=" +this.Strength;
 	}
 
 	public String getSymbol() {

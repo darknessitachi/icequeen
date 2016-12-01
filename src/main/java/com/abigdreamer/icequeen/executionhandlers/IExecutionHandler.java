@@ -12,10 +12,11 @@ import com.abigdreamer.icequeen.events.OrderEvent;
 /// strategies to be backtested in a very similar manner to the
 /// live trading engine.
 public interface IExecutionHandler {
+	
 	/// Takes an Order event and executes it, producing
 	/// a Fill event that gets placed onto the Events queue.
 	/// </summary>
 	/// <param name="orderEvent">Contains an Event object with order
 	/// information.</param>
-	void ExecuteOrder(OrderEvent orderEvent);
+	void executeOrder(OrderEvent orderEvent);
 }

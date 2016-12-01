@@ -19,17 +19,17 @@ public class SimulatedExecutionHandler implements IExecutionHandler {
 		this.bars = bars;
 	}
 
-	public void ExecuteOrder(OrderEvent orderEvent) {
+	public void executeOrder(OrderEvent orderEvent) {
 		// Simulate order execution delay
-		LocalDateTime dateTime = orderEvent.getOrderTime();// .AddSeconds(CONST_ExecutionDelaySeconds);
+		LocalDateTime dateTime = orderEvent.getOrderTime().plusSeconds(CONST_ExecutionDelaySeconds);
 
-		double closePrice = this.bars.GetLastClosePrice(orderEvent.getSymbol());
+		double closePrice = this.bars.getLastClosePrice(orderEvent.getSymbol());
 		double fillCost = closePrice * orderEvent.getQuantity();
 
 		FillEvent fillEvent = new FillEvent(dateTime, orderEvent.getSymbol(), "ARCA", orderEvent.getQuantity(),
 				orderEvent.getOrderDirection(), fillCost);
 
-		this.eventBus.Put(fillEvent);
+		this.eventBus.put(fillEvent);
 	}
 	
 }

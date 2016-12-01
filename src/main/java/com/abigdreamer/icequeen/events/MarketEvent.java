@@ -13,11 +13,6 @@ import com.abigdreamer.icequeen.enums.EventType;
  */
 public class MarketEvent extends Event {
 	
-	@Override
-	public EventType getEventType() {
-		return EventType.Market;
-	}
-
 	private LocalDateTime CurrentTime;
 
 	public MarketEvent(LocalDateTime currentTime) {
@@ -26,5 +21,10 @@ public class MarketEvent extends Event {
 
 	public LocalDateTime getCurrentTime() {
 		return CurrentTime;
+	}
+	
+	@Override
+	public EventType getEventType() {
+		return EventType.Market;
 	}
 }

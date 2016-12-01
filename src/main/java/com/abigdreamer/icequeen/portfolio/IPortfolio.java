@@ -9,13 +9,14 @@ import com.abigdreamer.icequeen.events.SignalEvent;
 
 public interface IPortfolio {
 	
-	void UpdateSignal(SignalEvent signal);
+	void updateSignal(SignalEvent signal);
 
-	void UpdateFill(FillEvent fill);
+	void updateFill(FillEvent fill);
 
-	void UpdateTimeIndex(MarketEvent market);
+	void updateTimeIndex(MarketEvent market);
 
 	Map<LocalDateTime, Holding> getHoldingHistory();
 
-	Map<LocalDateTime, Double> GetEquityCurve();
+	Map<LocalDateTime, Double> getEquityCurve();
+	
 }

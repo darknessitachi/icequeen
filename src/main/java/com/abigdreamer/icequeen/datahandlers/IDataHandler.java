@@ -16,13 +16,13 @@ public interface IDataHandler {
 	
 	List<String> getSymbols();
 
-	boolean getContinueBacktest();
+	boolean isContinueBacktest();
 
 	LocalDateTime getCurrentTime();
 
-	Bar GetLast(String symbol);
+	Bar getLast(String symbol);
 
-	double GetLastClosePrice(String symbol);
+	double getLastClosePrice(String symbol);
 
-	void Update();
+	void update();
 }

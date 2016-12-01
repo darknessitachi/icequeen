@@ -12,13 +12,16 @@ public class QueuedEventBus implements IEventBus {
 		this.queue = new LinkedBlockingQueue<Event>();
 	}
 
-	public Event Get() {
+	public Event get() {
 		synchronized (sync) {
-			return this.queue.size() <= 0 ? null : this.queue.poll();
+			if(this.queue.isEmpty()) {
+				return null;
+			}
+			return this.queue.poll();
 		}
 	}
 
-	public void Put(Event message) {
+	public void put(Event message) {
 		synchronized (sync) {
 			this.queue.offer(message);
 		}

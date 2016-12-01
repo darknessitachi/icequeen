@@ -1,6 +1,4 @@
-﻿//namespace BackTesting.Model.MarketData
-//{
-package com.abigdreamer.icequeen.marketdata;
+﻿package com.abigdreamer.icequeen.marketdata;
 
 public class Symbols {
 	public static String Sber = "sber";

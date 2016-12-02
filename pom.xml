@@ -19,6 +19,42 @@
 			<artifactId>rapid-ark-framework</artifactId>
 			<version>${rapidark.version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.la4j/la4j -->
+		<dependency>
+		    <groupId>org.la4j</groupId>
+		    <artifactId>la4j</artifactId>
+		    <version>0.6.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.reactivex/rxjava -->
+		<dependency>
+			<groupId>io.reactivex</groupId>
+			<artifactId>rxjava</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.reactivex/rxjava-async-util -->
+		<dependency>
+			<groupId>io.reactivex</groupId>
+			<artifactId>rxjava-async-util</artifactId>
+			<version>0.21.0</version>
+		</dependency>
+			
 	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<!-- Disable annotation processing for ourselves.
+					<compilerArgument>-proc:none</compilerArgument>
+					 -->
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

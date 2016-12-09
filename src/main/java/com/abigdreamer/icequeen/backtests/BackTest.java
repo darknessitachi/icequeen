@@ -36,8 +36,7 @@ public class BackTest {
 
 	private TimeWatch timeWatch;
 
-	public BackTest(IEventBus eventBus, IDataHandler bars, IStrategy strategy, IPortfolio portfolio,
-			IExecutionHandler executionHandler) {
+	public BackTest(IEventBus eventBus, IDataHandler bars, IStrategy strategy, IPortfolio portfolio, IExecutionHandler executionHandler) {
 		this.eventBus = eventBus;
 		this.bars = bars;
 		this.strategy = strategy;
